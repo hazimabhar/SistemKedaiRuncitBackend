@@ -26,6 +26,7 @@ import lombok.ToString;
 @Builder
 @ToString
 public class UserEntity {
+    
 
     @Id
     @Column(name="user_id")
@@ -39,7 +40,7 @@ public class UserEntity {
 
     @Column(name =  "user_role")
     private String userRole;
-    
+
     @Column(name =  "createdOn")
     private LocalDateTime createdOn;
 

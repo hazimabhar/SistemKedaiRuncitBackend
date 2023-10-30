@@ -12,7 +12,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
-
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -20,15 +19,19 @@ import lombok.ToString;
 @ToString
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class UserDTO implements Serializable {
+public class ManagerDTO implements Serializable {
 
-    private String userId;
-    
-    private String userIcNumber;
+    private String managerId;
 
-    private String userPassword;
+    private String managerName;
 
-    private String userRole;
+    private String managerAddress;
+
+    private String managerPhoneNumber;
+
+    private String managerGender;
+
+    private String managerEmail;
 
     @JsonFormat(pattern = "dd/MM/yyyy HH:mm:ss")
     private LocalDateTime createdOn;
@@ -39,4 +42,6 @@ public class UserDTO implements Serializable {
     private LocalDateTime lastModifiedOn;
 
     private String lastModifiedBy;
+
+    private String userId;    
 }
