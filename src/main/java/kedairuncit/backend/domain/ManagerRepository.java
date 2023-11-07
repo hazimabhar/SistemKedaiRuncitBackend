@@ -8,5 +8,4 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 public interface ManagerRepository extends JpaRepository<ManagerEntity, String>, JpaSpecificationExecutor<ManagerEntity>  {
   
         Optional<ManagerEntity> findByManagerEmail(String managerEmail);
-
 }

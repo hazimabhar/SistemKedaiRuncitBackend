@@ -32,7 +32,7 @@ public class UserEntity {
     @Column(name="user_id")
     private String userId = UUID.randomUUID().toString();
 
-    @Column(name="user_icNumber")
+    @Column(name="user_ic_number")
     private String userIcNumber;
 
     @Column(name="user_password")
@@ -41,16 +41,16 @@ public class UserEntity {
     @Column(name =  "user_role")
     private String userRole;
 
-    @Column(name =  "createdOn")
+    @Column(name =  "created_on")
     private LocalDateTime createdOn;
 
-    @Column(name = "createdBy")
+    @Column(name = "created_by")
     private String createdBy;
 
-    @Column(name = "lastModifiedOn")
+    @Column(name = "last_modified_on")
     private LocalDateTime lastModifiedOn;
 
-    @Column(name =  "lastModifiedBy")
+    @Column(name =  "last_modified_by")
     private String lastModifiedBy;
 
     public UserEntity(String userIcNumber, String userPassword, String userRole, LocalDateTime createdOn,

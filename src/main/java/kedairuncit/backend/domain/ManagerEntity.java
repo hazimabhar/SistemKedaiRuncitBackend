@@ -35,7 +35,7 @@ public class ManagerEntity {
     @Column(name="manager_address")
     private String managerAddress;
 
-    @Column(name="manager_phoneNumber")
+    @Column(name="manager_phone_number")
     private String managerPhoneNumber;
 
     @Column(name="manager_gender")
@@ -44,16 +44,16 @@ public class ManagerEntity {
     @Column(name="manager_email")
     private String managerEmail;
 
-    @Column(name="createdOn")
+    @Column(name="created_on")
     private LocalDateTime createdOn;
 
-    @Column(name="createdBy")
+    @Column(name="created_by")
     private String createdBy;
 
-    @Column(name = "lastModifiedOn")
+    @Column(name = "last_modified_on")
     private LocalDateTime lastModifiedOn;
 
-    @Column(name="lastModifiedBy")
+    @Column(name="last_modified_by")
     private String lastModifiedBy;
 
     @Column(name = "user_id")
