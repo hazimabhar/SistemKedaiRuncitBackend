@@ -24,4 +24,10 @@ public class UserController {
     public ResponseEntity<?> registerUser(@RequestBody UserDTO user) {
         return ResponseEntity.ok(userService.registerUser(user));
     }
+
+    @PostMapping("/authenticate")
+    public ResponseEntity<?> authenticateUser(@RequestBody UserDTO user) {
+        return ResponseEntity.ok(userService.authenticateUser(user));
+    }
+    
 }
