@@ -7,7 +7,6 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import kedairuncit.backend.dto.ManagerDTO;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -16,33 +15,33 @@ import lombok.Setter;
 import lombok.ToString;
 
 @Entity
-@Table(name="managers")
+@Table(name="workers")
 @NoArgsConstructor
 @AllArgsConstructor
 @Setter
 @Getter
 @ToString
 @Builder
-public class ManagerEntity {
-    
+public class WorkerEntity {
+
     @Id
-    @Column(name="manager_id")
-    private String managerId = UUID.randomUUID().toString();
+    @Column(name="worker_id")
+    private String workerId = UUID.randomUUID().toString();
 
-    @Column(name = "manager_name")
-    private String managerName;
+    @Column(name = "worker_name")
+    private String workerName;
 
-    @Column(name="manager_address")
-    private String managerAddress;
+    @Column(name="worker_address")
+    private String workerAddress;
 
-    @Column(name="manager_phone_number")
-    private String managerPhoneNumber;
+    @Column(name="worker_phone_number")
+    private String workerPhoneNumber;
 
-    @Column(name="manager_gender")
-    private String managerGender;
+    @Column(name="worker_gender")
+    private String workerGender;
 
-    @Column(name="manager_email")
-    private String managerEmail;
+    @Column(name="worker_email")
+    private String workerEmail;
 
     @Column(name="created_on")
     private LocalDateTime createdOn;
@@ -59,18 +58,21 @@ public class ManagerEntity {
     @Column(name = "user_id")
     private String userId;
 
-    public ManagerEntity(String managerName, String managerAddress, String managerPhoneNumber, String managerGender,
-            String managerEmail, LocalDateTime createdOn, String createdBy, LocalDateTime lastModifiedOn,
+    public WorkerEntity(String workerName, String workerAddress, String workerPhoneNumber, String workerGender,
+            String workerEmail, LocalDateTime createdOn, String createdBy, LocalDateTime lastModifiedOn,
             String lastModifiedBy, String userId) {
-        this.managerName = managerName;
-        this.managerAddress = managerAddress;
-        this.managerPhoneNumber = managerPhoneNumber;
-        this.managerGender = managerGender;
-        this.managerEmail = managerEmail;
+        this.workerName = workerName;
+        this.workerAddress = workerAddress;
+        this.workerPhoneNumber = workerPhoneNumber;
+        this.workerGender = workerGender;
+        this.workerEmail = workerEmail;
         this.createdOn = createdOn;
         this.createdBy = createdBy;
         this.lastModifiedOn = lastModifiedOn;
         this.lastModifiedBy = lastModifiedBy;
         this.userId = userId;
     }
+
+    
+    
 }

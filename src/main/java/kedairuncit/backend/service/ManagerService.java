@@ -27,7 +27,7 @@ public class ManagerService {
         
         if(existingEmail.isPresent()){
 
-            response.setResponseMessage("GSS003");
+            response.setResponseMessage("GSS004");
             response.setExistingEmail(manager.getManagerEmail());
 
             return ResponseEntity

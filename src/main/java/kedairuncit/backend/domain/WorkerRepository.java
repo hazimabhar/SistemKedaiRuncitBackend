@@ -5,8 +5,8 @@ import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
-public interface UserRepository extends JpaRepository<UserEntity, String>, JpaSpecificationExecutor<UserEntity> {
-    
-    Optional<UserEntity> findByUserIcNumber(String userIcNumber);
-}
+public interface WorkerRepository extends JpaRepository<WorkerEntity, String>, JpaSpecificationExecutor<WorkerEntity>{
 
+    Optional<WorkerEntity> findByWorkerEmail(String workerEmail);
+    
+}
