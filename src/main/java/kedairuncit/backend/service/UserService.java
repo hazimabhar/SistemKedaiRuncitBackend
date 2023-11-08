@@ -23,8 +23,10 @@ public class UserService {
     RegisterUserResponse response = new RegisterUserResponse();
     AuthenticateUserResponse loginResponse = new AuthenticateUserResponse();
     BCryptPasswordEncoder bcrypt = new BCryptPasswordEncoder();
+        
+    int loginAttempt =0;
 
-    
+     
     public ResponseEntity<?> registerUser(UserDTO user) {
 
         Optional<UserEntity> existingUser = userRepository.findByUserIcNumber(user.getUserIcNumber());
@@ -65,9 +67,7 @@ public class UserService {
     }
     
     public ResponseEntity<?> authenticateUser(UserDTO user){
-
         Optional<UserEntity> existingUser = userRepository.findByUserIcNumber(user.getUserIcNumber());
-
 
         if(existingUser.isEmpty()){
             loginResponse.setResponseMessage("GSS006");
@@ -79,40 +79,31 @@ public class UserService {
         }
         else{
             boolean isAuthenticated = bcrypt.matches(user.getUserPassword(), existingUser.get().getUserPassword());
-            int loginAttempt = 0;
 
-            if(isAuthenticated == false) {
-                    System.out.println(loginAttempt);
+            if(!isAuthenticated) {
 
+                loginAttempt++;
+                    
+                if(loginAttempt < 4){
                     loginResponse.setResponseMessage("GSS007");
                     loginResponse.setUserRole(null);
 
                     return ResponseEntity
                         .status(HttpStatus.BAD_REQUEST)
                         .body(loginResponse);
+                }
+                else{
+                    loginResponse.setResponseMessage("GSS008");
+                    loginResponse.setUserRole(null);
 
-                // if(loginAttempt < 4){
-                //     loginResponse.setResponseMessage("GSS007");
-                //     loginResponse.setUserRole(null);
-
-                //     return ResponseEntity
-                //         .status(HttpStatus.BAD_REQUEST)
-                //         .body(loginResponse);
-                // }
-                // else{
-                    
-                //     // loginAttempt +=1;
-                //     loginResponse.setResponseMessage("GSS008");
-                //     loginResponse.setUserRole(null);
-
-                //     return ResponseEntity
-                //         .status(HttpStatus.BAD_REQUEST)
-                //         .body(loginResponse);  
-                // }
+                    return ResponseEntity
+                        .status(HttpStatus.BAD_REQUEST)
+                        .body(loginResponse);  
+                }
             }
             else{
 
-                // loginAttempt = 0;
+                loginAttempt = 0;
                 loginResponse.setResponseMessage("GSS005");
                 loginResponse.setUserRole(existingUser.get().getUserRole());
 
