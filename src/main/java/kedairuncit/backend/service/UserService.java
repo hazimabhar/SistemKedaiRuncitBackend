@@ -49,7 +49,6 @@ public class UserService {
     BCryptPasswordEncoder bcrypt = new BCryptPasswordEncoder();
         
     int loginAttempt =0;
-
      
     public ResponseEntity<?> registerUser(UserDTO user) {
 
@@ -94,12 +93,7 @@ public class UserService {
         Optional<UserEntity> existingUser = userRepository.findByUserIcNumber(user.getUserIcNumber());
 
         if(existingUser.isEmpty()){
-            loginResponse.setResponseMessage(icNumberNotExist);
-            loginResponse.setUserRole(null);
-
-            return ResponseEntity
-                .status(HttpStatus.BAD_REQUEST)
-                .body(loginResponse);
+            return icNumberNotExist();
         }
         else{
             boolean isAuthenticated = bcrypt.matches(user.getUserPassword(), existingUser.get().getUserPassword());
@@ -139,19 +133,12 @@ public class UserService {
     }
     public ResponseEntity<?> resetPasswordCredentials(ResetPasswordDTO user){
 
-        System.out.println(user);
-
         loginAttempt = 0;
         Optional<UserEntity> existingUser = userRepository.findByUserIcNumber(user.getUserIcNumber());
 
         if(existingUser.isEmpty())
         {
-            loginResponse.setResponseMessage(icNumberNotExist);
-            loginResponse.setUserRole(null);
-
-            return ResponseEntity
-                .status(HttpStatus.BAD_REQUEST)
-                .body(loginResponse);
+            return icNumberNotExist();
         }
         else if(existingUser.get().getUserRole().equals("Manager")){
 
@@ -159,32 +146,16 @@ public class UserService {
 
             if(managerData.isEmpty())
             {
-                loginResponse.setResponseMessage(unableToReset);
-                loginResponse.setUserRole(existingUser.get().getUserRole());
-
-                return ResponseEntity
-                    .status(HttpStatus.BAD_REQUEST)
-                    .body(loginResponse);
-
+                return unableToReset(existingUser.get());
             }
             else
             {
                 if(user.getUserEmail().equals(managerData.get().getManagerEmail()) && user.getUserPhoneNumber().equals(managerData.get().getManagerPhoneNumber()))
                 {
-                    loginResponse.setResponseMessage(ableToReset);
-                    loginResponse.setUserRole(existingUser.get().getUserRole());
-
-                    return ResponseEntity
-                        .status(HttpStatus.OK)                        
-                        .body(loginResponse);
+                   return ableToReset(existingUser.get());
                 }
                 else{
-                    loginResponse.setResponseMessage(unableToReset);
-                    loginResponse.setUserRole(existingUser.get().getUserRole());
-
-                    return ResponseEntity
-                        .status(HttpStatus.BAD_REQUEST)
-                        .body(loginResponse);
+                    return unableToReset(existingUser.get());
                 }
             }
         }
@@ -192,32 +163,42 @@ public class UserService {
             Optional<WorkerEntity> workerData = workerRepository.findByUserId(existingUser.get().getUserId());
 
             if(workerData.isEmpty()){
-                loginResponse.setResponseMessage(unableToReset);
-                loginResponse.setUserRole(existingUser.get().getUserRole());
-
-                return ResponseEntity
-                    .status(HttpStatus.BAD_REQUEST)
-                    .body(loginResponse);
+                return unableToReset(existingUser.get());
             }
             else{
                 if(user.getUserEmail().equals(workerData.get().getWorkerEmail()) && user.getUserPhoneNumber().equals(workerData.get().getWorkerPhoneNumber()))
                 {
-                    loginResponse.setResponseMessage(ableToReset);
-                    loginResponse.setUserRole(existingUser.get().getUserRole());
-
-                    return ResponseEntity
-                        .status(HttpStatus.OK)
-                        .body(loginResponse);
+                   return ableToReset(existingUser.get());
                 }
                 else{
-                    loginResponse.setResponseMessage(unableToReset);
-                    loginResponse.setUserRole(existingUser.get().getUserRole());
-
-                    return ResponseEntity
-                        .status(HttpStatus.BAD_REQUEST)
-                        .body(loginResponse);
+                    return unableToReset(existingUser.get());
                 }
             }
         }
+    }
+
+    public ResponseEntity<?> unableToReset(UserEntity existingUser){
+        loginResponse.setResponseMessage(unableToReset);
+        loginResponse.setUserRole(existingUser.getUserRole());
+        
+        return ResponseEntity
+            .status(HttpStatus.BAD_REQUEST)
+            .body(loginResponse);
+    }
+    public ResponseEntity<?> ableToReset(UserEntity existingUser){
+        loginResponse.setResponseMessage(ableToReset);
+        loginResponse.setUserRole(existingUser.getUserRole());
+
+        return ResponseEntity
+            .status(HttpStatus.OK)
+            .body(loginResponse);
+    }
+    public ResponseEntity<?> icNumberNotExist(){
+            loginResponse.setResponseMessage(icNumberNotExist);
+            loginResponse.setUserRole(null);
+
+            return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(loginResponse);
     }
 }
