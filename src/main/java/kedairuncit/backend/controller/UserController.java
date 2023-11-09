@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import kedairuncit.backend.domain.UserEntity;
+import kedairuncit.backend.dto.ResetPasswordDTO;
 import kedairuncit.backend.dto.UserDTO;
 import kedairuncit.backend.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -30,4 +31,9 @@ public class UserController {
         return ResponseEntity.ok(userService.authenticateUser(user));
     }
     
+    @PostMapping("/resetpasswordcredentials")
+    public ResponseEntity<?> resetPasswordCredentials(@RequestBody ResetPasswordDTO user){
+        // return null;
+        return ResponseEntity.ok(userService.resetPasswordCredentials(user));
+    }
 }

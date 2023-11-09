@@ -8,5 +8,7 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 public interface WorkerRepository extends JpaRepository<WorkerEntity, String>, JpaSpecificationExecutor<WorkerEntity>{
 
     Optional<WorkerEntity> findByWorkerEmail(String workerEmail);
+
+    Optional<WorkerEntity> findByUserId(String userId);
     
 }

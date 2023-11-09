@@ -8,8 +8,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import kedairuncit.backend.domain.ManagerEntity;
+import kedairuncit.backend.domain.ManagerRepository;
 import kedairuncit.backend.domain.UserEntity;
 import kedairuncit.backend.domain.UserRepository;
+import kedairuncit.backend.domain.WorkerEntity;
+import kedairuncit.backend.domain.WorkerRepository;
+import kedairuncit.backend.dto.ResetPasswordDTO;
 import kedairuncit.backend.dto.UserDTO;
 import kedairuncit.backend.dto.response.AuthenticateUserResponse;
 import kedairuncit.backend.dto.response.RegisterUserResponse;
@@ -19,6 +24,25 @@ public class UserService {
 
     @Autowired 
     private UserRepository userRepository;
+    private ManagerRepository managerRepository;
+    private WorkerRepository workerRepository;
+
+    private String successRegister = "GSS000";
+    private String existingIcNumber = "GSS001";
+    private String loginSuccees = "GSS005";
+    private String icNumberNotExist = "GSS006";
+    private String wrongPassword = "GSS007";
+    private String wrongPassword3 = "GSS008";
+    private String ableToReset = "GSS009";
+    private String unableToReset = "GSS010";
+
+
+    public UserService(UserRepository userRepository, ManagerRepository managerRepository, WorkerRepository workerRepository) {
+
+        this.userRepository = userRepository;
+        this.managerRepository = managerRepository;
+        this.workerRepository = workerRepository;
+    }
 
     RegisterUserResponse response = new RegisterUserResponse();
     AuthenticateUserResponse loginResponse = new AuthenticateUserResponse();
@@ -32,7 +56,7 @@ public class UserService {
         Optional<UserEntity> existingUser = userRepository.findByUserIcNumber(user.getUserIcNumber());
 
         if(existingUser.isPresent()) {
-            response.setResponseMessage("GSS001");
+            response.setResponseMessage(existingIcNumber);
             response.setUserId(null);
             response.setExistingIcNumber(user.getUserIcNumber());
             return ResponseEntity
@@ -56,7 +80,7 @@ public class UserService {
             );
             userRepository.save(newUser);
             
-            response.setResponseMessage("GSS000");
+            response.setResponseMessage(successRegister);
             response.setUserId(newUser.getUserId());
             response.setExistingIcNumber(null);
 
@@ -70,7 +94,7 @@ public class UserService {
         Optional<UserEntity> existingUser = userRepository.findByUserIcNumber(user.getUserIcNumber());
 
         if(existingUser.isEmpty()){
-            loginResponse.setResponseMessage("GSS006");
+            loginResponse.setResponseMessage(icNumberNotExist);
             loginResponse.setUserRole(null);
 
             return ResponseEntity
@@ -85,7 +109,7 @@ public class UserService {
                 loginAttempt++;
                     
                 if(loginAttempt < 4){
-                    loginResponse.setResponseMessage("GSS007");
+                    loginResponse.setResponseMessage(wrongPassword);
                     loginResponse.setUserRole(null);
 
                     return ResponseEntity
@@ -93,7 +117,7 @@ public class UserService {
                         .body(loginResponse);
                 }
                 else{
-                    loginResponse.setResponseMessage("GSS008");
+                    loginResponse.setResponseMessage(wrongPassword3);
                     loginResponse.setUserRole(null);
 
                     return ResponseEntity
@@ -104,12 +128,95 @@ public class UserService {
             else{
 
                 loginAttempt = 0;
-                loginResponse.setResponseMessage("GSS005");
+                loginResponse.setResponseMessage(loginSuccees);
                 loginResponse.setUserRole(existingUser.get().getUserRole());
 
                 return ResponseEntity
                     .status(HttpStatus.OK)
                     .body(loginResponse);
+            }
+        }
+    }
+    public ResponseEntity<?> resetPasswordCredentials(ResetPasswordDTO user){
+
+        System.out.println(user);
+
+        loginAttempt = 0;
+        Optional<UserEntity> existingUser = userRepository.findByUserIcNumber(user.getUserIcNumber());
+
+        if(existingUser.isEmpty())
+        {
+            loginResponse.setResponseMessage(icNumberNotExist);
+            loginResponse.setUserRole(null);
+
+            return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(loginResponse);
+        }
+        else if(existingUser.get().getUserRole().equals("Manager")){
+
+            Optional<ManagerEntity> managerData = managerRepository.findByUserId(existingUser.get().getUserId());
+
+            if(managerData.isEmpty())
+            {
+                loginResponse.setResponseMessage(unableToReset);
+                loginResponse.setUserRole(existingUser.get().getUserRole());
+
+                return ResponseEntity
+                    .status(HttpStatus.BAD_REQUEST)
+                    .body(loginResponse);
+
+            }
+            else
+            {
+                if(user.getUserEmail().equals(managerData.get().getManagerEmail()) && user.getUserPhoneNumber().equals(managerData.get().getManagerPhoneNumber()))
+                {
+                    loginResponse.setResponseMessage(ableToReset);
+                    loginResponse.setUserRole(existingUser.get().getUserRole());
+
+                    return ResponseEntity
+                        .status(HttpStatus.OK)                        
+                        .body(loginResponse);
+                }
+                else{
+                    loginResponse.setResponseMessage(unableToReset);
+                    loginResponse.setUserRole(existingUser.get().getUserRole());
+
+                    return ResponseEntity
+                        .status(HttpStatus.BAD_REQUEST)
+                        .body(loginResponse);
+                }
+            }
+        }
+        else {
+            Optional<WorkerEntity> workerData = workerRepository.findByUserId(existingUser.get().getUserId());
+
+            if(workerData.isEmpty()){
+                loginResponse.setResponseMessage(unableToReset);
+                loginResponse.setUserRole(existingUser.get().getUserRole());
+
+                return ResponseEntity
+                    .status(HttpStatus.BAD_REQUEST)
+                    .body(loginResponse);
+            }
+            else{
+                if(user.getUserEmail().equals(workerData.get().getWorkerEmail()) && user.getUserPhoneNumber().equals(workerData.get().getWorkerPhoneNumber()))
+                {
+                    loginResponse.setResponseMessage(ableToReset);
+                    loginResponse.setUserRole(existingUser.get().getUserRole());
+
+                    return ResponseEntity
+                        .status(HttpStatus.OK)
+                        .body(loginResponse);
+                }
+                else{
+                    loginResponse.setResponseMessage(unableToReset);
+                    loginResponse.setUserRole(existingUser.get().getUserRole());
+
+                    return ResponseEntity
+                        .status(HttpStatus.BAD_REQUEST)
+                        .body(loginResponse);
+                }
             }
         }
     }
