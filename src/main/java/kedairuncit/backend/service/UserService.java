@@ -63,11 +63,7 @@ public class UserService {
                 .body(response);
         }
         else{
-            //hash password
-            String hashedPassword = bcrypt.encode(user.getUserPassword());
-            user.setUserPassword(hashedPassword);
-
-            //insert user info
+            
             UserEntity newUser = new UserEntity(
                 user.getUserIcNumber(),
                 user.getUserPassword(),
@@ -174,6 +170,25 @@ public class UserService {
                     return unableToReset(existingUser.get());
                 }
             }
+        }
+    }
+
+    public ResponseEntity<?> resetPassword(String userId, UserDTO user){
+        Optional <UserEntity> existingUser = userRepository.findById(userId);
+
+        if(existingUser.isPresent()){
+            UserEntity updatedData = existingUser.get();
+
+            updatedData.setUserPassword(user.getUserPassword());
+            updatedData.setLastModifiedOn(user.getLastModifiedOn());
+            updatedData.setLastModifiedBy(user.getLastModifiedBy());
+
+            userRepository.save(updatedData);
+
+            return ableToReset(updatedData);
+        }
+        else{
+            return unableToReset(null);
         }
     }
 

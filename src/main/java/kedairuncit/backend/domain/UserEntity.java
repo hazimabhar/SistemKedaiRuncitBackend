@@ -3,9 +3,6 @@ package kedairuncit.backend.domain;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -27,7 +24,6 @@ import lombok.ToString;
 @ToString
 public class UserEntity {
     
-
     @Id
     @Column(name="user_id")
     private String userId = UUID.randomUUID().toString();
@@ -55,6 +51,7 @@ public class UserEntity {
 
     public UserEntity(String userIcNumber, String userPassword, String userRole, LocalDateTime createdOn,
             String createdBy, LocalDateTime lastModifiedOn, String lastModifiedBy) {
+        
         this.userIcNumber = userIcNumber;
         this.userPassword = userPassword;
         this.userRole = userRole;
@@ -62,7 +59,6 @@ public class UserEntity {
         this.createdBy = createdBy;
         this.lastModifiedOn = lastModifiedOn;
         this.lastModifiedBy = lastModifiedBy;
-    }    
-
+    }      
     
 }

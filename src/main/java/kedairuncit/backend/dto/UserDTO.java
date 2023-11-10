@@ -3,6 +3,8 @@ package kedairuncit.backend.dto;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -39,4 +41,11 @@ public class UserDTO implements Serializable {
     private LocalDateTime lastModifiedOn;
 
     private String lastModifiedBy;
+
+    public void setUserPassword(String userPassword) {
+
+        BCryptPasswordEncoder bcrypt = new BCryptPasswordEncoder();
+
+        this.userPassword = bcrypt.encode(userPassword);
+      }
 }
